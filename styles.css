@@ -8,6 +8,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  cursor: grab;
   background: radial-gradient(
     ellipse 50% 45% at 50% 50%,
     #1e0015 0%,
@@ -37,7 +38,7 @@ body {
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  animation: spin 8s linear infinite;
+  animation: spin 18s linear infinite;
 }
 
 .scene {
@@ -69,7 +70,7 @@ body {
   width: 0;
   height: 0;
   transform-style: preserve-3d;
-  animation: spin 8s linear infinite;
+  animation: spin 18s linear infinite;
 }
 
 @keyframes spin {

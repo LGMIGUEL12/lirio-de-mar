@@ -132,3 +132,65 @@ center.style.cssText = `
   box-shadow: 0 0 22px rgba(255,220,240,1), 0 0 55px rgba(255,120,200,0.55);
 `;
 flower.appendChild(center);
+
+// === ORBIT DRAG CONTROL ===
+let dragging = false;
+let lastX = 0, lastY = 0;
+let rotX = -25, rotY = 0;
+const tilts = Array.from(document.querySelectorAll('.scene-tilt'));
+
+function getScale() {
+  return Math.min(1, Math.min(window.innerWidth / 600, window.innerHeight / 550));
+}
+
+function applyTilt() {
+  const s = getScale();
+  tilts.forEach(el => {
+    el.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${s})`;
+  });
+}
+
+applyTilt();
+window.addEventListener('resize', applyTilt);
+
+document.addEventListener('mousedown', e => {
+  dragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+  document.body.style.cursor = 'grabbing';
+});
+
+document.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  rotY += (e.clientX - lastX) * 0.35;
+  rotX -= (e.clientY - lastY) * 0.35;
+  rotX = Math.max(-88, Math.min(88, rotX));
+  lastX = e.clientX;
+  lastY = e.clientY;
+  applyTilt();
+});
+
+document.addEventListener('mouseup', () => {
+  dragging = false;
+  document.body.style.cursor = 'grab';
+});
+
+document.addEventListener('mouseleave', () => { dragging = false; });
+
+document.addEventListener('touchstart', e => {
+  dragging = true;
+  lastX = e.touches[0].clientX;
+  lastY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (!dragging) return;
+  rotY += (e.touches[0].clientX - lastX) * 0.35;
+  rotX -= (e.touches[0].clientY - lastY) * 0.35;
+  rotX = Math.max(-88, Math.min(88, rotX));
+  lastX = e.touches[0].clientX;
+  lastY = e.touches[0].clientY;
+  applyTilt();
+}, { passive: true });
+
+document.addEventListener('touchend', () => { dragging = false; });
