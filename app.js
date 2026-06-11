@@ -30,15 +30,7 @@ function makeLilyPad(w, h, leftOff, yOff, yRotDeg, opacity) {
     clip-path: path('${lilyPadPath(w, h)}');
     background:
       radial-gradient(ellipse 72% 68% at 50% 50%, transparent 52%, rgba(0, 42, 0, 0.52) 100%),
-      repeating-conic-gradient(
-        from 0deg at 50% 48%,
-        rgba(4, 60, 2, 0.22) 0deg 1.5deg,
-        transparent 1.5deg 12deg
-      ),
-      radial-gradient(
-        ellipse 70% 66% at 48% 46%,
-        #aaff88 0%, #55bb33 26%, #2a8818 56%, #0e4508 100%
-      );
+      radial-gradient(ellipse 70% 66% at 48% 46%, #aaff88 0%, #55bb33 26%, #2a8818 56%, #0e4508 100%);
     transform: translateY(${yOff}px) rotateY(${yRotDeg}deg) rotateX(82deg) translateZ(-4px);
     opacity: ${opacity};
   `;
@@ -164,7 +156,7 @@ document.addEventListener('mousemove', e => {
   if (!dragging) return;
   rotY += (e.clientX - lastX) * 0.35;
   rotX -= (e.clientY - lastY) * 0.35;
-  rotX = Math.max(-88, Math.min(88, rotX));
+  rotX = Math.max(-88, Math.min(5, rotX));
   lastX = e.clientX;
   lastY = e.clientY;
   applyTilt();
@@ -187,7 +179,7 @@ document.addEventListener('touchmove', e => {
   if (!dragging) return;
   rotY += (e.touches[0].clientX - lastX) * 0.35;
   rotX -= (e.touches[0].clientY - lastY) * 0.35;
-  rotX = Math.max(-88, Math.min(88, rotX));
+  rotX = Math.max(-88, Math.min(5, rotX));
   lastX = e.touches[0].clientX;
   lastY = e.touches[0].clientY;
   applyTilt();
