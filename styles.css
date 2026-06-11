@@ -7,9 +7,6 @@
 body {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   background: radial-gradient(
     ellipse 50% 45% at 50% 50%,
@@ -19,14 +16,42 @@ body {
   );
 }
 
-.scene {
-  perspective: 1200px;
+/* Lily pad scene — large perspective eliminates dome distortion on tall flat elements */
+.lily-scene {
+  perspective: 8000px;
   perspective-origin: 50% 45%;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#lily-spinner {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  animation: spin 8s linear infinite;
+}
+
+.scene {
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .scene-tilt {

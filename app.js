@@ -1,45 +1,86 @@
-const flower = document.getElementById('flower');
+const flower      = document.getElementById('flower');
+const lilySpinner = document.getElementById('lily-spinner');
 
-// CORRECTO: base de cada pétalo en el centro (origin).
-// rotateY(angle) + rotateX(spread) abre pétalo hacia afuera Y arriba.
-// spread grande (62°) = pétalo casi horizontal (externo).
-// spread pequeño (18°) = pétalo casi vertical (bud interior).
-// Alturas calculadas para extensión radial deseada: H = targetRadius / sin(spread)
+// SVG path: ellipse with V-notch at top
+function lilyPadPath(w, h) {
+  const cx = w / 2, cy = h / 2;
+  const rx = w * 0.492, ry = h * 0.488;
+  const a  = 6 * Math.PI / 180;
+  const nx1 = cx + rx * Math.cos(-Math.PI / 2 + a);
+  const ny1 = cy + ry * Math.sin(-Math.PI / 2 + a);
+  const nx2 = cx + rx * Math.cos(-Math.PI / 2 - a);
+  const ny2 = ny1;
+  const f   = n => n.toFixed(1);
+  const mMY = ny1 + ry * 0.36;
+  const mTY = ny1 + ry * 0.55;
+  const mL  = cx - (nx1 - cx) * 0.20;
+  const mR  = cx + (nx1 - cx) * 0.20;
+  return `M ${f(nx1)},${f(ny1)} A ${f(rx)},${f(ry)} 0 1,1 ${f(nx2)},${f(ny2)} L ${f(mL)},${f(mMY)} ${f(cx)},${f(mTY)} ${f(mR)},${f(mMY)} Z`;
+}
+
+function makeLilyPad(w, h, leftOff, yOff, yRotDeg, opacity) {
+  const el = document.createElement('div');
+  el.style.cssText = `
+    position: absolute;
+    width: ${w}px;
+    height: ${h}px;
+    top: ${-h / 2}px;
+    left: ${-w / 2 + leftOff}px;
+    transform-origin: center center;
+    clip-path: path('${lilyPadPath(w, h)}');
+    background:
+      radial-gradient(ellipse 72% 68% at 50% 50%, transparent 52%, rgba(0, 42, 0, 0.52) 100%),
+      repeating-conic-gradient(
+        from 0deg at 50% 48%,
+        rgba(4, 60, 2, 0.22) 0deg 1.5deg,
+        transparent 1.5deg 12deg
+      ),
+      radial-gradient(
+        ellipse 70% 66% at 48% 46%,
+        #aaff88 0%, #55bb33 26%, #2a8818 56%, #0e4508 100%
+      );
+    transform: translateY(${yOff}px) rotateY(${yRotDeg}deg) rotateX(82deg) translateZ(-4px);
+    opacity: ${opacity};
+  `;
+  return el;
+}
+
+lilySpinner.appendChild(makeLilyPad(400, 610, 0, 5, 0, 0.93));
+
+// === PETAL RINGS ===
 const RINGS = [
-  // Anillo exterior — casi plano, abre amplio
   {
     count: 10, width: 168, height: 250,
     tiltX: 62, angleOffset: 0,
     highlight: '#ee3377', mid: '#aa0055', base: '#550033',
   },
   {
-    count: 9, width: 152, height: 228,
+    count: 9,  width: 152, height: 228,
     tiltX: 57, angleOffset: 18,
     highlight: '#ff4488', mid: '#cc1166', base: '#770044',
   },
   {
-    count: 8, width: 136, height: 210,
+    count: 8,  width: 136, height: 210,
     tiltX: 51, angleOffset: 0,
     highlight: '#ff6699', mid: '#dd2277', base: '#991155',
   },
   {
-    count: 8, width: 118, height: 196,
+    count: 8,  width: 118, height: 196,
     tiltX: 44, angleOffset: 22.5,
     highlight: '#ff88aa', mid: '#ee3388', base: '#bb2266',
   },
   {
-    count: 7, width: 98, height: 184,
+    count: 7,  width: 98,  height: 184,
     tiltX: 37, angleOffset: 0,
     highlight: '#ffaacc', mid: '#ff5599', base: '#dd1166',
   },
   {
-    count: 7, width: 78, height: 175,
+    count: 7,  width: 78,  height: 175,
     tiltX: 29, angleOffset: 13,
     highlight: '#ffccee', mid: '#ff88bb', base: '#ee4499',
   },
-  // Bud interior — casi vertical, muy claro
   {
-    count: 6, width: 56, height: 188,
+    count: 6,  width: 56,  height: 188,
     tiltX: 18, angleOffset: 0,
     highlight: '#fff5f8', mid: '#ffddee', base: '#ffaacc',
   },
@@ -69,18 +110,15 @@ RINGS.forEach((ring, ringIdx) => {
         ${ring.base}      100%
       )
     `;
-    // Base en origen, tip se abre radialmente hacia afuera y arriba
     petal.style.transform = `
       rotateY(${angle}deg)
       rotateX(${ring.tiltX}deg)
       translateZ(${ringIdx * 0.8}px)
     `;
-
     flower.appendChild(petal);
   }
 });
 
-// Centro
 const center = document.createElement('div');
 center.id = 'center';
 center.style.cssText = `
